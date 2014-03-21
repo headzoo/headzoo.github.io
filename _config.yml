@@ -1,3 +1,7 @@
-name: headzoo.io
+title: headzoo.io
+description: All about me!
 markdown: redcarpet
+permalink: pretty
 pygments: true
+paginate: 5
+paginate_path: "blog/page:num"
