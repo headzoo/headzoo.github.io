@@ -1,0 +1,9 @@
+title: "headzoo"
+url: "https://headzoo.github.io"
+baseurl: ""
+# Plugins (optional). If you use {{% seo %}}, enable jekyll-seo-tag:
+plugins:
+  - jekyll-seo-tag
+# Exclude source ZIP and temp artifacts if you drop them here
+exclude:
+  - site.zip
