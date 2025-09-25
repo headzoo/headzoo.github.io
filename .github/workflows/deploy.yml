@@ -1,18 +1,47 @@
-# .github/workflows/deploy.yml
-name: Deploy to GitHub Pages
+name: Deploy Jekyll site to GitHub Pages
+
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+  workflow_dispatch:
+
+# Required for Pages
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # If you have a build, run it here (npm/pnpm build, hugo, etc.)
-      # - run: pnpm install && pnpm build
-      - uses: peaceiris/actions-gh-pages@v3
+
+      # Configure Pages (detects baseurl, etc.)
+      - uses: actions/configure-pages@v5
+
+      # Build Jekyll (official action)
+      - uses: actions/jekyll-build-pages@v1
         with:
-          publish_dir: ./dist   # or ./ (if already static)
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source: ./
+          destination: ./_site
+
+      # Package the site for deployment (v3 is required)
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
