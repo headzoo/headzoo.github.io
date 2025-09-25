@@ -14,7 +14,15 @@ layout: default
     </p>
 
     <div class="post-body">
-      {{ content }}
+      {% if page.featured_image %}
+      <div class="feature-inner">
+        <img src="{{ page.featured_image | relative_url }}" alt="Featured">
+      </div>
+      {% endif %}
+
+      <div class="post-content">
+        {{ content }}
+      </div>
     </div>
   </div>
 </article>

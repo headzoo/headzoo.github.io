@@ -14,11 +14,13 @@ permalink: /index.html
       <span class="meta-part">{{ post.date | date: "%B %-d, %Y"}}</span>
     </p>
 
-    {% if post.excerpt %}
-    <div class="excerpt">{{ post.excerpt }}</div>
-    {% else %}
-    <div class="excerpt">{{ post.content | strip_html | truncatewords: 40 }}</div>
+    {% if post.featured_image %}
+    <div class="feature-inner">
+      <img src="{{ post.featured_image | relative_url }}" alt="Featured">
+    </div>
     {% endif %}
+
+    <div class="post-content">{{ post.content }}</div>
   </div>
 </article>
 {% endfor %}
