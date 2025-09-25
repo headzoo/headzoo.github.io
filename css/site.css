@@ -559,3 +559,45 @@ pre .hljs {
 .hide {
   display: none;
 }
+
+.site-header {
+  padding: 1rem 0;
+  background-color: #293a42;
+  border-bottom: 2px solid #73b0cf;
+  margin-bottom: 2rem;
+}
+
+.nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background-color: #364c56 !important;
+}
+
+.nav a[aria-current='page'] {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  background: #fff;
+  padding: 0.5rem;
+  border: 1px solid #333;
+}
