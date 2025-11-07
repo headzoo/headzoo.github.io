@@ -1,0 +1,34 @@
+---
+layout: default
+title: 'headzoo.io'
+permalink: /claimsmodal.html
+---
+
+<div style="text-align: center">
+  <!-- Start Addtowallet HTML -->
+  <a id="link"
+    href="https://backend-service-299-o754ewvnta-ue.a.run.app/e/buildabear/eaec929e19e9467e?d=eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMTIzNDU2Nzg5MCIsImFtb3VudCI6IjIwIiwiZGF0ZSI6IjA5LzIwMjUiLCJlbWFpbCI6ImN1c3RvbWVyQGVtYWlsLmNvbSJ9.kzgUXFJ2MHsbTjEUmOeK2VOjHXgFKScJB5eatff8rM0"
+    title="Add to Wallet">
+    <img
+      src="https://backend-service-299-o754ewvnta-ue.a.run.app/widgets/images/YMugowZUELPXvbHDich4.png?d=eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMTIzNDU2Nzg5MCIsImFtb3VudCI6IjIwIiwiZGF0ZSI6IjA5LzIwMjUiLCJlbWFpbCI6ImN1c3RvbWVyQGVtYWlsLmNvbSJ9.kzgUXFJ2MHsbTjEUmOeK2VOjHXgFKScJB5eatff8rM0"
+      alt="" height="300" width="290" style="border-radius: 5px" />
+  </a>
+  <!-- End Addtowallet HTML -->
+</div>
+<script type="module">
+  import { createClaimModal } from "https://cdn.addtowallet.io/js/claim/modal/v0.0.7/claimsmodal.js";
+
+  const modal = createClaimModal();
+  modal.on("error", ({ error }) => {
+    console.error(error);
+  });
+
+  const link = document.getElementById("link");
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    modal.open({
+      campaign: "YMugowZUELPXvbHDich4",
+      jwt: "eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMTIzNDU2Nzg5MCIsImFtb3VudCI6IjIwIiwiZGF0ZSI6IjA5LzIwMjUiLCJlbWFpbCI6ImN1c3RvbWVyQGVtYWlsLmNvbSJ9.8Fs8kZzD_QJVbxyCRWAj5ZT4rKZREtUY9ixCfXMJZ3c",
+    });
+  });
+</script>
