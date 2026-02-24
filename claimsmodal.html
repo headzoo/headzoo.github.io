@@ -6,21 +6,28 @@ permalink: /claimsmodal.html
 
 <div style="text-align: center">
   <!-- Start Addtowallet HTML -->
-  <!-- Begin Addtowallet Bundle Widget -->
-  <div style="text-align: center;">
-    <h4>Select deals</h4>
-    <p>
-      Check the boxes below to select the deals you want to include in your
-      bundle, and then click the Add to Wallet button.
-    </p>
-  </div>
-  <div id="atw-bundle-widget"></div>
-  <script src="https://app.addtowallet.io/widgets/bundle/dKXz8AICY9xVCEOxNEIT.js"></script>
-  <script>
-    atwBundleWidget('#atw-bundle-widget', {
-      "buttonColor": "#2B519F",
-      "type": "thumbnails"
-    });
-  </script>
-  <!-- End Addtowallet Bundle Widget -->
+  <a id="link"
+    href="https://app.addtowallet.io/e/buildabear/136e388235aa40b6?d=eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMm1jeGE5b29oZzBqIiwibWVtYmVybnVtYmVyIjoiMTIzNDU2Nzg5MCIsIkZpcnN0TmFtZSI6IkpvZSIsIkxhc3ROYW1lIjoiQmxvdyIsIkVtYWlsIjoiam9lQGJsb3cuY29tIiwiYmFyY29kZSI6IjEyMzQ1NiIsIl9fYmFubmVyIjoiaHR0cHM6Ly9oZWFkem9vLmlvL2ltYWdlcy9mZWF0dXJlZC1zbG93LWlzLXNtb290aC5qcGVnIn0.2IfV5PbNlVtPlHrqolfG_XVYSIlgKjSMyPtbTlnBKO0"
+    title="Add to Wallet" style="width: 300px; max-width: 100%; text-decoration: none;">
+    <img src="https://cdn.addtowallet.io/img/generic-addtowallet-button_720.png" style="width: 100%; height: 100%;"
+      alt="" />
+  </a>
+  <!-- End Addtowallet HTML -->
 </div>
+<script type="module">
+  import { createClaimModal } from "https://cdn.addtowallet.io/js/claim/modal/v0.1.12/claimsmodal.js";
+
+  const modal = createClaimModal();
+  modal.on("error", ({ error }) => {
+    console.error(error);
+  });
+
+  const link = document.getElementById("link");
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    modal.open({
+      campaign: "dKXz8AICY9xVCEOxNEIT",
+      jwt: "eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMm1jeGE5b29oZzBqIiwibWVtYmVybnVtYmVyIjoiMTIzNDU2Nzg5MCIsIkZpcnN0TmFtZSI6IkpvZSIsIkxhc3ROYW1lIjoiQmxvdyIsIkVtYWlsIjoiam9lQGJsb3cuY29tIiwiYmFyY29kZSI6IjEyMzQ1NiIsIl9fYmFubmVyIjoiaHR0cHM6Ly9oZWFkem9vLmlvL2ltYWdlcy9mZWF0dXJlZC1zbG93LWlzLXNtb290aC5qcGVnIn0.2IfV5PbNlVtPlHrqolfG_XVYSIlgKjSMyPtbTlnBKO0",
+    });
+  });
+</script>
