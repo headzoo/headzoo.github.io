@@ -1,0 +1,302 @@
+---
+layout: post
+title: "Git Belongs in More Developer Tools"
+date: 2026-06-23
+featured_image: /images/featured-git.png
+---
+
+<div>
+  <p>
+    Developers already have a collaboration system that works.
+  </p>
+
+  <p>
+    It is called git.
+  </p>
+
+  <p>
+    That sounds obvious, but a surprising number of developer tools still behave like git does not
+    exist. They store important project data in private clouds, opaque workspaces, proprietary
+    databases, or giant export files that nobody wants to diff. Then they bolt on “team sharing” later
+    as a paid feature, usually with invites, roles, seats, syncing, workspaces, and some new mental
+    model developers have to learn.
+  </p>
+
+  <p>
+    But developers already know how to collaborate.
+  </p>
+
+  <p>
+    We branch. We commit. We review. We merge. We revert. We blame. We tag releases. We keep history.
+    We argue in pull requests. We use the same workflow for application code, infrastructure,
+    documentation, migrations, tests, CI configuration, and deployment scripts.
+  </p>
+
+  <p>
+    So why not more of our tools?
+  </p>
+
+  <p><strong>Project Data Is Still Source Code</strong></p>
+
+  <p>
+    A lot of developer tooling produces data that is not technically “code,” but still behaves like
+    source.
+  </p>
+
+  <p>
+    API collections are a good example. They describe real parts of a system: endpoints, headers,
+    authentication, examples, request bodies, environments, scripts, and workflows. That information
+    changes as the application changes. It has history. It has ownership. It benefits from review.
+  </p>
+
+  <p>
+    The same is true for database schemas, OpenAPI definitions, deployment configs, seed data, mocks,
+    test cases, local development settings, and automation rules.
+  </p>
+
+  <p>
+    When those things live outside git, they become harder to trust.
+  </p>
+
+  <p>
+    You end up asking questions like:
+  </p>
+
+  <ul>
+    <li>Who changed this?</li>
+    <li>When did it change?</li>
+    <li>Why did it change?</li>
+    <li>Can I compare this to production?</li>
+    <li>Can I roll it back?</li>
+    <li>Can I review it before the team starts depending on it?</li>
+  </ul>
+
+  <p>
+    Git already answers those questions.
+  </p>
+
+  <p><strong>Export Files Are Not a Workflow</strong></p>
+
+  <p>
+    A common workaround is export/import.
+  </p>
+
+  <p>
+    Export the thing. Commit the exported file. Tell your teammate to import it. Hope they do not
+    overwrite their local copy. Hope the next export does not reorder everything and create a useless
+    diff. Hope nobody forgets which copy is the current one.
+  </p>
+
+  <p>
+    That is better than nothing, but it is not a real workflow. It is a side channel.
+  </p>
+
+  <p>
+    Export/import works fine for snapshots. It does not work well for living project data.
+  </p>
+
+  <p>
+    A real workflow should let the tool write structured files as you work. Changes should be
+    reviewable. Small edits should produce small diffs. Teams should be able to branch, commit, pull,
+    push, and merge without treating the developer tool as a separate universe.
+  </p>
+
+  <p>
+    That is the key distinction: git should not be an afterthought. It should be part of the tool’s
+    storage model.
+  </p>
+
+  <p><strong>Developers Do Not Need Another Collaboration Model</strong></p>
+
+  <p>
+    A lot of modern tools try to own collaboration.
+  </p>
+
+  <p>
+    They create accounts. They create teams. They create workspaces. They create invite flows. They
+    create permissions. They create billing tiers. They create a cloud sync layer. Then they ask
+    developers to move their project knowledge into that system.
+  </p>
+
+  <p>
+    Sometimes that makes sense. Real-time collaboration is useful. Hosted services are useful. A
+    shared cloud backend can be the right answer.
+  </p>
+
+  <p>
+    But it should not be the only answer.
+  </p>
+
+  <p>
+    For many teams, the repository is already the source of truth. Access control already exists there.
+    Review already exists there. History already exists there. CI already exists there. If the data
+    belongs to the project, putting it in the project repository is usually the least surprising thing
+    to do.
+  </p>
+
+  <p>
+    That does not mean every tool needs to become a git client. It means more tools should respect git
+    as a first-class place where developers keep important work.
+  </p>
+
+  <p><strong>Good Git Integration Is More Than “Save as JSON”</strong></p>
+
+  <p>
+    There is a lazy version of git support: dump one huge JSON file into a folder and call it a day.
+  </p>
+
+  <p>
+    That is not good enough.
+  </p>
+
+  <p>
+    If every change rewrites a giant blob, diffs become noisy. Merge conflicts become painful. Code
+    review becomes nearly useless. Developers technically have the data in git, but they do not get
+    the full benefit of git.
+  </p>
+
+  <p>
+    Good git-backed tooling should produce files that are meant to be read, reviewed, and merged.
+  </p>
+
+  <p>
+    That means:
+  </p>
+
+  <ul>
+    <li>stable formatting</li>
+    <li>predictable file names</li>
+    <li>small files for small units of work</li>
+    <li>local-only secrets kept out of commits</li>
+    <li>shared configuration separated from private overrides</li>
+    <li>sensible conflict behavior</li>
+    <li>no pointless churn when nothing meaningful changed</li>
+  </ul>
+
+  <p>
+    The goal is not just to store data in a repository. The goal is to make the repository useful.
+  </p>
+
+  <p><strong>HarborClient Now Supports Git</strong></p>
+
+  <p>
+    This is one reason I like the direction HarborClient is taking.
+  </p>
+
+  <p>
+    HarborClient now supports git-backed collections, which means requests, environments, and
+    collection metadata can live as files in a repository instead of being trapped inside an app
+    database or passed around as exports. Git is treated as a first-class database provider alongside
+    options like SQLite, MySQL, PostgreSQL, and Firestore. Collections are written to disk as
+    structured JSON while you work. Each saved request gets its own file, which keeps diffs smaller
+    and merge conflicts more localized. HarborClient also includes source control features in the app,
+    including change indicators, commit, pull, push, and live reload after changes on disk. You can
+    read the announcement here:
+    <a href="https://harborclient-blog.com/2026/06/23/harborclient-adds-git-support/" title="">HarborClient adds git
+      support</a>.
+  </p>
+
+  <p>
+    That is the right idea.
+  </p>
+
+  <p>
+    An API client should not force teams to choose between using the app and using their existing
+    development workflow. If a team already reviews API changes in GitHub or GitLab, the API client
+    should fit that process. If collections belong next to the app code, they should be able to live
+    there. If someone wants to branch and experiment with a new endpoint design, that should feel
+    natural.
+  </p>
+
+  <p>
+    Git support makes API collections feel less like app state and more like project assets.
+  </p>
+
+  <p><strong>Local-First Still Matters</strong></p>
+
+  <p>
+    Another benefit of git-backed tooling is that it reinforces local ownership.
+  </p>
+
+  <p>
+    There is a big difference between “your work is stored in our cloud account” and “your work is
+    stored in your repository.”
+  </p>
+
+  <p>
+    Cloud services can be convenient, but developer tools should be careful about making the cloud
+    mandatory. Not every team wants another account system. Not every project can put internal API
+    details into a third-party workspace. Not every solo developer wants their workflow tied to a
+    subscription.
+  </p>
+
+  <p>
+    Git is boring in the best possible way. It is portable. It is inspectable. It does not require a
+    specific vendor. It works with GitHub, GitLab, Bitbucket, self-hosted servers, local repositories,
+    and plain old folders.
+  </p>
+
+  <p>
+    That kind of boring infrastructure is exactly what developer tools should lean on more often.
+  </p>
+
+  <p><strong>Git Makes Tools More Honest</strong></p>
+
+  <p>
+    When a tool stores its data in git, it has to be more honest about what it is doing.
+  </p>
+
+  <p>
+    The files are visible. The changes are visible. The structure is visible. Developers can inspect
+    the output, script against it, back it up, review it, and move it somewhere else.
+  </p>
+
+  <p>
+    That reduces lock-in.
+  </p>
+
+  <p>
+    It also raises the quality bar. A tool that writes unreadable garbage to disk is going to get
+    judged for it. A tool that rewrites everything on every save is going to annoy people immediately.
+    A tool that leaks secrets into committed files is going to lose trust.
+  </p>
+
+  <p>
+    That pressure is healthy.
+  </p>
+
+  <p>
+    Developer tools should not be magical boxes. They should be reliable layers on top of workflows
+    developers already understand.
+  </p>
+
+  <p><strong>More Tools Should Work This Way</strong></p>
+
+  <p>
+    Git does not belong everywhere. Some data is too large, too noisy, too temporary, or too
+    collaborative in real time for git to be the right storage layer.
+  </p>
+
+  <p>
+    But a lot more developer data belongs in git than currently does.
+  </p>
+
+  <p>
+    API collections belong in git. Environment templates belong in git. Mocks belong in git. Test
+    scenarios belong in git. Tool configuration belongs in git. Anything that describes how a project
+    works, how it is tested, how it is deployed, or how developers interact with it should at least
+    have a clean path into source control.
+  </p>
+
+  <p>
+    The best developer tools do not ask you to abandon your workflow.
+  </p>
+
+  <p>
+    They meet you where the work already happens.
+  </p>
+
+  <p>
+    And for developers, a lot of that work still happens in git.
+  </p>
+</div>
