@@ -1,0 +1,169 @@
+---
+layout: post
+title: "HarborClient: A Free and Decentralized Postman Alternative"
+date: 2026-06-22
+featured_image: /images/featured-sunrise.png
+---
+
+<div>
+  <p>
+    I've been working on <a href="https://github.com/headzoo/harborclient" title="">HarborClient</a>,
+    a desktop HTTP client for building, sending, and inspecting API requests. If you've used Postman,
+    Insomnia, or similar tools, HarborClient will feel familiar — but it's built around a different
+    idea: your collections and credentials stay under your control, with no accounts, no subscriptions,
+    and no lock-in to a vendor's cloud.
+  </p>
+
+  <blockquote>
+    <p>
+      The free API client that keeps your work private: no accounts, no subscriptions, no lock-in.
+    </p>
+  </blockquote>
+
+  <p>
+    HarborClient is a native Electron app for macOS, Windows, and Linux. Download an installer,
+    launch it, and start sending requests. You don't need Node.js, pnpm, or any development tools
+    just to use it. Your collections and requests are saved locally on your machine by default.
+  </p>
+
+  <p><strong>Free and decentralized</strong></p>
+
+  <p>
+    Most API clients today assume you'll sign up, sync everything to their servers, and pay when your
+    team outgrows the free tier. HarborClient doesn't work that way. There's no central account system
+    and no requirement to upload your work anywhere. The app runs on your machine and stores data
+    where <em>you</em> choose — locally in SQLite, or in a database you operate yourself.
+  </p>
+
+  <p>
+    That decentralization matters if you care about privacy, offline access, or simply not having
+    another SaaS bill. Your request history, environment variables, and collection scripts are yours.
+    HarborClient doesn't phone home with your API traffic.
+  </p>
+
+  <p><strong>Pluggable storage</strong></p>
+
+  <p>
+    Collections, saved requests, and environments live in a pluggable storage layer. Out of the box,
+    HarborClient uses SQLite in your application data directory — a single file on disk, easy to back
+    up or move. When you need more, you can point HarborClient at remote engines such as Firestore,
+    MySQL, or PostgreSQL. Multiple teammates can share the same remote database and see the same
+    collections without going through a third-party sync service.
+  </p>
+
+  <p>
+    Each collection can also choose its own provider. Create a collection on SQLite for solo
+    experiments, move it to a shared Postgres instance when the team needs access, or connect it to a
+    <a href="https://github.com/headzoo/harborclient-service-hub" title="">HarborClient Team Hub</a>
+    when you want token-based sharing without handing out database credentials.
+  </p>
+
+  <p><strong>Team collaboration</strong></p>
+
+  <p>
+    HarborClient supports several collaboration paths, depending on how your team likes to work:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Shared remote database</strong> — Point multiple HarborClient instances at the same
+      Firestore, MySQL, or PostgreSQL backend. Everyone reads and writes the same collections.
+    </li>
+    <li>
+      <strong>Encrypted invites</strong> — Share a live remote collection with a colleague using a
+      signed, encrypted invite token. HarborClient uses RSA key pairs (managed under
+      <em>File → Certificates</em>) so only trusted recipients can decrypt the connection details.
+      Invite tokens embed database credentials — treat them like secrets.
+    </li>
+    <li>
+      <strong>Team hubs</strong> — Self-host
+      <a href="https://headzoo.github.io/harborclient-service-hub/" title="">HarborClient Team Hub</a>
+      and connect from the desktop app with a bearer API token. Teammates get shared collections
+      through the hub's HTTP API without configuring database connections by hand. Administrators can
+      manage users, roles, and optional hub-provided AI models from HarborClient itself.
+    </li>
+  </ul>
+
+  <p>
+    HarborClient also imports Postman v2.1 collection exports, so migrating existing work is
+    straightforward. Script text comes over verbatim, though Postman's <code>pm</code> API needs to be
+    rewritten against HarborClient's <code>hc</code> sandbox — more on that below.
+  </p>
+
+  <p><strong>Request builder and workspace</strong></p>
+
+  <p>
+    The main window is split into a sidebar for collections and environments, a tab bar across the top,
+    the request editor in the middle, and a response panel below. Open multiple requests in tabs at
+    once; each tab keeps its own draft, response, and unsaved-changes indicator.
+  </p>
+
+  <p>
+    The request editor supports GET, POST, PUT, PATCH, DELETE, HEAD, and OPTIONS. Configure query
+    params, headers, authorization (Basic Auth or Bearer Token), cookies, and body types including JSON,
+    plain text, multipart form, and URL-encoded form data. Use <code>{{variable}}</code> placeholders
+    in URLs, headers, params, and body text — hover any token to preview its resolved value.
+  </p>
+
+  <p>
+    Environments are global variable groups you select from the tab bar. Collection variables load
+    first; environment variables override them when both define the same key. That makes it easy to
+    switch between staging and production without duplicating every request.
+  </p>
+
+  <p>
+    After you send, the response panel shows status, timing, size, a pretty-printed body, response
+    headers, and test results. A session Console logs every send so you can expand entries and inspect
+    full request and response details without leaving the app.
+  </p>
+
+  <p><strong>Scripts and tests</strong></p>
+
+  <p>
+    HarborClient runs JavaScript before and after each request, at both the collection and request
+    level. Scripts use the global <code>hc</code> object to modify the outgoing request, set variables,
+    and assert on responses. Post-request tests registered with <code>hc.test</code> appear in the
+    response viewer's Tests tab with pass/fail counts.
+  </p>
+
+  <p>
+    If you're coming from Postman, the mental model is similar but the API is different: HarborClient
+    uses <code>hc</code>, not <code>pm</code>. There's no compatibility layer — imported Postman scripts
+    need a quick rewrite. The good news is that common patterns map cleanly:
+    <code>hc.variables.set</code> for session variables,
+    <code>hc.environment.variables.set</code> for persisted environment values, and
+    <code>hc.expect(hc.response.code).to.equal(200)</code> for assertions.
+  </p>
+
+  <p><strong>AI assistant</strong></p>
+
+  <p>
+    HarborClient includes an optional AI sidebar for working with your API requests. Chat with models
+    from OpenAI, Claude, or Google Gemini using your own API keys — stored locally and encrypted with
+    the OS keychain when available. The assistant can inspect your collections, read responses, query
+    JSON bodies with JMESPath, and even send requests or modify the active tab when you ask it to.
+  </p>
+
+  <p>
+    When your team runs HarborClient Team Hub with LLM support enabled, the desktop app can route chat
+    through the hub instead of personal keys. Hub models are labeled accordingly and preferred over
+    personal keys for the same model id.
+  </p>
+
+  <p><strong>Getting started</strong></p>
+
+  <p>
+    Download the latest release for your platform from
+    <a href="https://github.com/headzoo/harborclient/releases/latest" title="">GitHub Releases</a>.
+    Installers are available for Windows , macOS, and Linux. Full documentation
+    lives at <a href="https://harborclient.com/" title="">harborclient.com</a>. The
+    HarborClient blog is at <a href="https://harborclient-blog.com" title="">harborclient-blog.com</a>.
+  </p>
+
+  <p>
+    HarborClient is open source under the MIT license. If you build or test APIs regularly and want a
+    Postman-style client without the cloud baggage, give it a try — and if you find bugs or have ideas,
+    issues and pull requests are welcome on
+    <a href="https://github.com/headzoo/harborclient" title="">GitHub</a>.
+  </p>
+</div>

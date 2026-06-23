@@ -3,18 +3,18 @@
 
 <head>
   <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>headzoo</title>
+<title>headzoo.io | headzoo</title>
 <meta name="generator" content="Jekyll v3.10.0" />
-<meta property="og:title" content="headzoo" />
+<meta property="og:title" content="headzoo.io" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4001/node_modules/prettier/" />
-<meta property="og:url" content="http://localhost:4001/node_modules/prettier/" />
+<link rel="canonical" href="http://localhost:4001/claimsmodal.html" />
+<meta property="og:url" content="http://localhost:4001/claimsmodal.html" />
 <meta property="og:site_name" content="headzoo" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="headzoo" />
+<meta property="twitter:title" content="headzoo.io" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","headline":"headzoo","url":"http://localhost:4001/node_modules/prettier/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","headline":"headzoo.io","url":"http://localhost:4001/claimsmodal.html"}</script>
 <!-- End Jekyll SEO tag -->
  
   <meta charset="utf-8">
@@ -69,108 +69,33 @@
         <!-- Main Content -->
 
         <div class="col-12 col-md-8">
-          <p><a href="https://prettier.io"><img src="https://unpkg.com/prettier-logo@1.0.3/images/prettier-banner-light.svg" alt="Prettier Banner" /></a></p>
+          <div style="text-align: center">
+  <!-- Start Addtowallet HTML -->
+  <a id="link"
+    href="https://app.addtowallet.io/e/buildabear/136e388235aa40b6?d=eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMm1jeGE5b29oZzBqIiwibWVtYmVybnVtYmVyIjoiMTIzNDU2Nzg5MCIsIkZpcnN0TmFtZSI6IkpvZSIsIkxhc3ROYW1lIjoiQmxvdyIsIkVtYWlsIjoiam9lQGJsb3cuY29tIiwiYmFyY29kZSI6IjEyMzQ1NiIsIl9fYmFubmVyIjoiaHR0cHM6Ly9oZWFkem9vLmlvL2ltYWdlcy9mZWF0dXJlZC1zbG93LWlzLXNtb290aC5qcGVnIn0.2IfV5PbNlVtPlHrqolfG_XVYSIlgKjSMyPtbTlnBKO0"
+    title="Add to Wallet" style="width: 300px; max-width: 100%; text-decoration: none;">
+    <img src="https://cdn.addtowallet.io/img/generic-addtowallet-button_720.png" style="width: 100%; height: 100%;"
+      alt="" />
+  </a>
+  <!-- End Addtowallet HTML -->
+</div>
+<script type="module">
+  import { createClaimModal } from "https://cdn.addtowallet.io/js/claim/modal/v0.1.14/claimsmodal.js";
 
-<h2 align="center">Opinionated Code Formatter</h2>
+  const modal = createClaimModal();
+  modal.on("error", ({ error }) => {
+    console.error(error);
+  });
 
-<p align="center">
-  <em>
-    JavaScript
-    · TypeScript
-    · Flow
-    · JSX
-    · JSON
-  </em>
-  <br />
-  <em>
-    CSS
-    · SCSS
-    · Less
-  </em>
-  <br />
-  <em>
-    HTML
-    · Vue
-    · Angular
-  </em>
-  <br />
-  <em>
-    GraphQL
-    · Markdown
-    · YAML
-  </em>
-  <br />
-  <em>
-    <a href="https://prettier.io/docs/plugins">
-      Your favorite language?
-    </a>
-  </em>
-</p>
-
-<p align="center">
-  <a href="https://github.com/prettier/prettier/actions?query=branch%3Amain">
-    <img alt="CI Status" src="https://img.shields.io/github/check-runs/prettier/prettier/main?style=flat-square&amp;label=CI" /></a>
-  <a href="https://codecov.io/gh/prettier/prettier">
-    <img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/prettier/prettier.svg?style=flat-square" /></a>
-  <a href="https://x.com/acdlite/status/974390255393505280">
-    <img alt="Blazing Fast" src="https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg?style=flat-square" /></a>
-  <br />
-  <a href="https://www.npmjs.com/package/prettier">
-    <img alt="npm version" src="https://img.shields.io/npm/v/prettier.svg?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/prettier">
-    <img alt="weekly downloads from npm" src="https://img.shields.io/npm/dw/prettier.svg?style=flat-square" /></a>
-  <a href="https://github.com/prettier/prettier#badge">
-    <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" /></a>
-  <a href="https://x.com/intent/follow?screen_name=PrettierCode">
-    <img alt="Follow Prettier on X" src="https://img.shields.io/badge/%40PrettierCode-9f9f9f?style=flat-square&amp;logo=x&amp;labelColor=555" /></a>
-</p>
-
-<h2 id="intro">Intro</h2>
-
-<p>Prettier is an opinionated code formatter. It enforces a consistent style by parsing your code and re-printing it with its own rules that take the maximum line length into account, wrapping code when necessary.</p>
-
-<h3 id="input">Input</h3>
-
-<!-- prettier-ignore -->
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">foo</span><span class="p">(</span><span class="nx">reallyLongArg</span><span class="p">(),</span> <span class="nx">omgSoManyParameters</span><span class="p">(),</span> <span class="nx">IShouldRefactorThis</span><span class="p">(),</span> <span class="nx">isThereSeriouslyAnotherOne</span><span class="p">());</span>
-</code></pre></div></div>
-
-<h3 id="output">Output</h3>
-
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">foo</span><span class="p">(</span>
-  <span class="nx">reallyLongArg</span><span class="p">(),</span>
-  <span class="nx">omgSoManyParameters</span><span class="p">(),</span>
-  <span class="nx">IShouldRefactorThis</span><span class="p">(),</span>
-  <span class="nx">isThereSeriouslyAnotherOne</span><span class="p">(),</span>
-<span class="p">);</span>
-</code></pre></div></div>
-
-<p>Prettier can be run <a href="https://prettier.io/docs/editors">in your editor</a> on-save, in a <a href="https://prettier.io/docs/precommit">pre-commit hook</a>, or in <a href="https://prettier.io/docs/cli#list-different">CI environments</a> to ensure your codebase has a consistent style without devs ever having to post a nit-picky comment on a code review ever again!</p>
-
-<hr />
-
-<p><strong><a href="https://prettier.io/docs/">Documentation</a></strong></p>
-
-<p><a href="https://prettier.io/docs/install">Install</a> ·
-<a href="https://prettier.io/docs/options">Options</a> ·
-<a href="https://prettier.io/docs/cli">CLI</a> ·
-<a href="https://prettier.io/docs/api">API</a></p>
-
-<p><strong><a href="https://prettier.io/playground/">Playground</a></strong></p>
-
-<hr />
-
-<h2 id="badge">Badge</h2>
-
-<p>Show the world you’re using <em>Prettier</em> → <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="code style: prettier" /></a></p>
-
-<div class="language-md highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nv">![code style: prettier</span><span class="p">](</span><span class="sx">https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square</span><span class="p">)</span>](https://github.com/prettier/prettier)
-</code></pre></div></div>
-
-<h2 id="contributing">Contributing</h2>
-
-<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
-
+  const link = document.getElementById("link");
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    modal.open({
+      campaign: "dKXz8AICY9xVCEOxNEIT",
+      jwt: "eyJhbGciOiJIUzI1NiJ9.eyJ0cmFuc2FjdGlvbklEIjoiMm1jeGE5b29oZzBqIiwibWVtYmVybnVtYmVyIjoiMTIzNDU2Nzg5MCIsIkZpcnN0TmFtZSI6IkpvZSIsIkxhc3ROYW1lIjoiQmxvdyIsIkVtYWlsIjoiam9lQGJsb3cuY29tIiwiYmFyY29kZSI6IjEyMzQ1NiIsIl9fYmFubmVyIjoiaHR0cHM6Ly9oZWFkem9vLmlvL2ltYWdlcy9mZWF0dXJlZC1zbG93LWlzLXNtb290aC5qcGVnIn0.2IfV5PbNlVtPlHrqolfG_XVYSIlgKjSMyPtbTlnBKO0",
+    });
+  });
+</script>
         </div>
         <!-- Sidebar -->
 
