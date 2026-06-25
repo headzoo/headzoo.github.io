@@ -73,6 +73,284 @@
 <article class="blog-article">
   <div class="blog-item-wrap">
     <h2 class="blog-title">
+      <a href="/2026/06/25/writing-a-harborclient-plugin.html">Writing a HarborClient Plugin</a>
+    </h2>
+    <p class="entry-meta">
+      <span class="meta-part">June 25, 2026</span>
+    </p>
+
+    
+    <div class="feature-inner">
+      <img src="/images/featured-harborclient-plugin.png" alt="Featured">
+    </div>
+    
+
+    <div class="post-content"><div>
+  <p>
+    <a href="https://harborclient.com" title="">HarborClient</a> ships with a plugin
+    system that lets you extend the desktop HTTP client with installable packages. Plugins can add
+    settings panels, sidebar views, themes, HTTP hooks, and more — all packaged as a
+    <code>.hcp</code> file (a normal ZIP archive with a HarborClient-specific extension).
+  </p>
+
+  <p>
+    If you have not used HarborClient yet, start with my earlier post on
+    <a href="/2026/06/22/harborclient-a-free-and-decentralized-postman-alternative.html" title="">HarborClient as a
+      Postman alternative</a>.
+    This tutorial walks through building a small plugin from scratch: a <strong>request logger</strong>
+    that writes every outbound HTTP request and response to the terminal as a JSON object — one line per
+    event, ready to pipe into <code>jq</code> or any log aggregator.
+  </p>
+
+  <p>
+    Plugins are long-lived extensions. That is different from
+    <a href="https://harborclient.com/request-scripts" title="">request scripts</a>, which run once per
+    send inside the same SES sandbox. Plugins install through
+    <a href="https://harborclient.com/settings#plugins" title="">Settings → Plugins</a>, declare
+    permissions up front, and stay active until you disable them. Full API reference lives in the
+    <a href="https://harborclient.github.io/plugin-api/" title="">plugin development docs</a>.
+  </p>
+
+  <p><strong>Prerequisites</strong></p>
+
+  <ul>
+    <li>HarborClient <strong>≥ 1.7.0</strong></li>
+    <li><code>pnpm</code>, TypeScript, and esbuild</li>
+    <li><code>@harborclient/plugin-api</code> as a dev dependency</li>
+  </ul>
+
+  <p><strong>Scaffold the project</strong></p>
+
+  <p>
+    The fastest way to start is the official skeleton. It creates a plugin directory with the expected
+    layout and build scripts:
+  </p>
+
+  <pre><code>npx @harborclient/plugin-skeleton@latest
+cd my-plugin
+pnpm install</code></pre>
+
+  <p>
+    For this tutorial we only need a <strong>main entry</strong> — no React UI — so a minimal layout
+    looks like this:
+  </p>
+
+  <pre><code>request-logger/
+├── manifest.json
+├── package.json
+├── src/
+│   └── main.ts
+└── dist/
+    └── main.js          # produced by esbuild</code></pre>
+
+  <p>
+    Add a <code>package.json</code> with esbuild build targets. HarborClient does not ship a plugin SDK
+    runtime; you bundle everything yourself:
+  </p>
+
+  <pre><code>{
+  "name": "request-logger",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@harborclient/plugin-api": "^0.3.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=dist/main.js --format=esm --platform=neutral",
+    "dev": "esbuild src/main.ts --bundle --outfile=dist/main.js --format=esm --platform=neutral --watch",
+    "pack": "pnpm build && zip -r ../request-logger.hcp manifest.json README.md dist"
+  }
+}</code></pre>
+
+  <p><strong>manifest.json</strong></p>
+
+  <p>
+    Every plugin needs a manifest at the package root. Ours is main-only: no <code>renderer</code> entry,
+    no <code>contributes</code> block, and a single <code>http</code> permission for send hooks:
+  </p>
+
+  <pre><code>{
+  "id": "com.example.request-logger",
+  "name": "Request Logger",
+  "version": "1.0.0",
+  "engines": { "harborclient": ">=1.7.0" },
+  "main": "dist/main.js",
+  "permissions": ["http"]
+}</code></pre>
+
+  <p>
+    The <code>id</code> is a reverse-DNS identifier that namespaces storage and updates. The
+    <code>main</code> field points at the bundled entry that runs in HarborClient's SES-hardened
+    utilityProcess — the same infrastructure used for request scripts, but with a broader plugin API.
+  </p>
+
+  <p><strong>src/main.ts — JSON logging</strong></p>
+
+  <p>
+    Main entries export an <code>activate(hc)</code> function. Import
+    <code>MainPluginContext</code> from <code>@harborclient/plugin-api</code>, register HTTP hooks, and
+    push each returned disposable onto <code>hc.subscriptions</code> so the host cleans up automatically
+    when the plugin is disabled.
+  </p>
+
+  <p>
+    The official docs include a
+    <a href="https://harborclient.github.io/plugin-api/examples/request-logger" title="">request logger example</a>
+    that prints human-readable lines. We will emit structured JSON instead — one object per
+    <code>console.log</code> call, which is easy to parse downstream:
+  </p>
+
+  <pre><code>import type { MainPluginContext } from '@harborclient/plugin-api';
+
+function logEvent(payload: Record&lt;string, unknown&gt;): void {
+  console.log(JSON.stringify(payload));
+}
+
+export function activate(hc: MainPluginContext): void {
+  hc.subscriptions.push(
+    hc.http.onBeforeSend((request) =&gt; {
+      logEvent({
+        event: 'request',
+        timestamp: new Date().toISOString(),
+        method: request.method,
+        url: request.url,
+        headers: request.headers,
+        ...(request.body ? { body: request.body } : {}),
+      });
+    })
+  );
+
+  hc.subscriptions.push(
+    hc.http.onAfterSend((request, response) =&gt; {
+      logEvent({
+        event: 'response',
+        timestamp: new Date().toISOString(),
+        method: request.method,
+        url: request.url,
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+        ...(response.body ? { body: response.body } : {}),
+      });
+    })
+  );
+}</code></pre>
+
+  <p>
+    A few things worth noting:
+  </p>
+
+  <ul>
+    <li>
+      <code>onBeforeSend</code> receives a mutable request snapshot. You can change method, URL, headers,
+      or body before the request goes out. We only read fields here.
+    </li>
+    <li>
+      <code>onAfterSend</code> fires once the response arrives, with both the request that was sent and
+      the serialized response (status, headers, body).
+    </li>
+    <li>
+      The host exposes <code>console</code> inside the utilityProcess sandbox, so output appears in the
+      terminal where you launched HarborClient — not inside the app window.
+    </li>
+    <li>
+      Main-only plugins activate as soon as they are enabled. You do not need to open a settings panel
+      first.
+    </li>
+  </ul>
+
+  <p>
+    After you send a <code>GET https://httpbin.org/get</code> request with the plugin enabled, your
+    terminal might show:
+  </p>
+
+  <pre><code>{"event":"request","timestamp":"2026-06-25T14:32:01.123Z","method":"GET","url":"https://httpbin.org/get","headers":{"Accept":"*/*"}}
+{"event":"response","timestamp":"2026-06-25T14:32:01.891Z","method":"GET","url":"https://httpbin.org/get","status":200,"statusText":"OK","headers":{"content-type":"application/json"},"body":"{\n  \"url\": \"https://httpbin.org/get\"\n}"}</code></pre>
+
+  <p><strong>Build and run</strong></p>
+
+  <p>Bundle the entry, then load the folder into HarborClient for development:</p>
+
+  <pre><code>pnpm build   # one-off build to dist/main.js
+pnpm dev     # rebuild on every save</code></pre>
+
+  <p>The recommended dev loop uses two terminals:</p>
+
+  <ol>
+    <li><strong>Terminal 1</strong> — run <code>pnpm dev</code> in your plugin directory.</li>
+    <li>
+      <strong>Terminal 2</strong> — run HarborClient from a checkout (<code>pnpm dev</code>) or launch an
+      installed build.
+    </li>
+    <li>
+      In the app, open <strong>Settings → Plugins → Load unpacked…</strong> and select your plugin
+      folder.
+    </li>
+    <li>Enable the plugin, send a request, and watch JSON lines appear in Terminal 2.</li>
+  </ol>
+
+  <p>
+    HarborClient watches <code>manifest.json</code> and entry files for unpacked plugins. When you save a
+    rebuild, the host debounces briefly, calls <code>deactivate()</code>, and re-runs
+    <code>activate(hc)</code> — no manual reload required during development.
+  </p>
+
+  <p>
+    For day-to-day work on the same plugin, you can also register the path at startup:
+  </p>
+
+  <pre><code>HARBOR_PLUGINS_DEV=~/projects/request-logger pnpm dev</code></pre>
+
+  <p><strong>Package for distribution</strong></p>
+
+  <p>
+    When you are ready to share the plugin, zip the manifest, README, and <code>dist/</code> output with
+    a <code>.hcp</code> extension:
+  </p>
+
+  <pre><code>pnpm pack
+# or manually:
+zip -r request-logger.hcp manifest.json README.md dist</code></pre>
+
+  <p>
+    Install the <code>.hcp</code> file from <strong>Settings → Plugins</strong>. HarborClient unpacks it
+    under your application data directory, validates the manifest, and shows the requested permissions
+    before enabling.
+  </p>
+
+  <p><strong>Built-in logging vs. a plugin</strong></p>
+
+  <p>
+    HarborClient also supports verbose request logging via <code>-vv</code> / <code>--very-verbose</code>
+    on the command line. A plugin logger runs whenever the plugin is enabled and lets you choose any
+    format — JSON lines, CSV, filtering by host, redacting headers — without restarting the app with
+    different flags.
+  </p>
+
+  <p><strong>Where to go next</strong></p>
+
+  <p>
+    This plugin has no UI, but HarborClient plugins can also contribute settings panels, sidebar views,
+    request tabs, themes, and toolbar actions. The
+    <a href="https://harborclient.github.io/plugin-api/renderer-overview" title="">renderer overview</a>
+    covers React integration with <code>installReact(hc.react)</code>, and the
+    <a href="https://harborclient.github.io/plugin-api/examples/" title="">examples section</a> includes
+    an audit tab and a Solarized theme.
+  </p>
+
+  <p>
+    For the full reference — manifest fields, permissions, IPC, storage, and packaging — see the
+    <a href="https://harborclient.github.io/plugin-api/" title="">plugin development docs</a>.
+  </p>
+</div></div>
+  </div>
+</article>
+
+<article class="blog-article">
+  <div class="blog-item-wrap">
+    <h2 class="blog-title">
       <a href="/2026/06/23/the-case-for-standardizing-the-design-of-websites.html">The Case for Standardizing the Design of Websites</a>
     </h2>
     <p class="entry-meta">
