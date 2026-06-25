@@ -28,7 +28,7 @@ image: /images/featured-harborclient-plugin.png
     send inside the same SES sandbox. Plugins install through
     <a href="https://harborclient.com/settings#plugins" title="">Settings → Plugins</a>, declare
     permissions up front, and stay active until you disable them. Full API reference lives in the
-    <a href="https://harborclient.github.io/plugin-api/" title="">plugin development docs</a>.
+    <a href="https://harborclient.github.io/sdk/" title="">plugin development docs</a>.
   </p>
 
   <p><strong>Prerequisites</strong></p>
@@ -36,7 +36,7 @@ image: /images/featured-harborclient-plugin.png
   <ul>
     <li>HarborClient <strong>≥ 1.7.0</strong></li>
     <li><code>pnpm</code>, TypeScript, and esbuild</li>
-    <li><code>@harborclient/plugin-api</code> as a dev dependency</li>
+    <li><code>@harborclient/sdk</code> as a dev dependency</li>
   </ul>
 
   <p><strong>Scaffold the project</strong></p>
@@ -73,7 +73,7 @@ pnpm install</code></pre>
   "version": "1.0.0",
   "type": "module",
   "devDependencies": {
-    "@harborclient/plugin-api": "^0.3.0",
+    "@harborclient/sdk": "^0.4.3",
     "esbuild": "^0.25.0",
     "typescript": "^5.0.0"
   },
@@ -111,19 +111,19 @@ pnpm install</code></pre>
 
   <p>
     Main entries export an <code>activate(hc)</code> function. Import
-    <code>MainPluginContext</code> from <code>@harborclient/plugin-api</code>, register HTTP hooks, and
+    <code>MainPluginContext</code> from <code>@harborclient/sdk</code>, register HTTP hooks, and
     push each returned disposable onto <code>hc.subscriptions</code> so the host cleans up automatically
     when the plugin is disabled.
   </p>
 
   <p>
     The official docs include a
-    <a href="https://harborclient.github.io/plugin-api/examples/request-logger" title="">request logger example</a>
+    <a href="https://harborclient.github.io/sdk/examples/request-logger" title="">request logger example</a>
     that prints human-readable lines. We will emit structured JSON instead — one object per
     <code>console.log</code> call, which is easy to parse downstream:
   </p>
 
-  <pre><code>import type { MainPluginContext } from '@harborclient/plugin-api';
+  <pre><code>import type { MainPluginContext } from '@harborclient/sdk';
 
 function logEvent(payload: Record&lt;string, unknown&gt;): void {
   console.log(JSON.stringify(payload));
@@ -255,14 +255,14 @@ zip -r request-logger.hcp manifest.json README.md dist</code></pre>
   <p>
     This plugin has no UI, but HarborClient plugins can also contribute settings panels, sidebar views,
     request tabs, themes, and toolbar actions. The
-    <a href="https://harborclient.github.io/plugin-api/renderer-overview" title="">renderer overview</a>
+    <a href="https://harborclient.github.io/sdk/renderer-overview" title="">renderer overview</a>
     covers React integration with <code>installReact(hc.react)</code>, and the
-    <a href="https://harborclient.github.io/plugin-api/examples/" title="">examples section</a> includes
+    <a href="https://harborclient.github.io/sdk/examples/" title="">examples section</a> includes
     an audit tab and a Solarized theme.
   </p>
 
   <p>
     For the full reference — manifest fields, permissions, IPC, storage, and packaging — see the
-    <a href="https://harborclient.github.io/plugin-api/" title="">plugin development docs</a>.
+    <a href="https://harborclient.github.io/sdk/" title="">plugin development docs</a>.
   </p>
 </div>
