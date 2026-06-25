@@ -14,9 +14,9 @@ layout: default
     </p>
 
     <div class="post-body">
-      {% if page.featured_image %}
+      {% if page.image %}
       <div class="feature-inner">
-        <img src="{{ page.featured_image | relative_url }}" alt="Featured">
+        <img src="{{ page.image | relative_url }}" alt="Featured">
       </div>
       {% endif %}
 
